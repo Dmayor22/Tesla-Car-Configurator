@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+.btn-selected {
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  padding: 8px;
+  transition: transform 0.3;
+}
+
+.btn-selected:hover {
+    transform: scale(1);
+}
