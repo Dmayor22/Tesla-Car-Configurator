@@ -14,6 +14,8 @@ const centerConsoleTrays = document.getElementById("CCT");
 const sunshade = document.getElementById("sunshade");
 const allWeatherInteriorLiners = document.getElementById("AWIL");
 const accesoriesContainer = document.getElementById("accesories-container");
+const downPaymentEl = document.getElementById("down-payment");
+const monthlyPaymentEl = document.getElementById("monthly-payment");
 
 // price variables
 const basePrice = 52490;
@@ -56,6 +58,9 @@ const updateTotalPrice = () => {
 
   // Update Price in UI
   totalPriceElement.textContent = `$${currentPrice.toLocaleString()}`;
+
+  // update estimate price
+  handleEstPaymentUpdate();
 };
 
 let selectedColor = "Stealth Grey";
@@ -179,6 +184,7 @@ const fsd = () => {
 
   updateTotalPrice();
 };
+
 const handleAccessoriesClick = () => {
   const isSelected = centerConsoleTrays.checked;
   const isSelectedTwo = sunshade.checked;
@@ -190,14 +196,40 @@ const handleAccessoriesClick = () => {
   updateTotalPrice();
 };
 
+// Payment Breakdown Calculation
+const handleEstPaymentUpdate = () => {
+  const downPayment = currentPrice * 0.1;
+  downPaymentEl.textContent = `$${downPayment}`;
+
+  // Calculate loan details (assuming 60-month loan and 3% interest rate)
+  const loanTermMonths = 60;
+  const interestRate = 0.03;
+
+  const loanAmount = currentPrice - downPayment;
+
+  // Monthly payment formula: P * (r(1+r)^n) / ((1+r)^n - 1)
+  const monthlyInterestRate = interestRate / 12;
+
+  const monthlyPayment =
+    (loanAmount *
+      (monthlyInterestRate *
+        Math.pow(1 + monthlyInterestRate, loanTermMonths))) /
+    (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1);
+
+  monthlyPaymentEl.textContent = `$${monthlyPayment
+    .toFixed(2)
+    .toLocaleString()}`;
+};
+
 // Event Listeners
+// Initializing pricing
+updateTotalPrice();
 window.addEventListener("scroll", () => requestAnimationFrame(handleScroll));
 exteriorColorSection.addEventListener("click", handleColorSelection);
 interiorColorSection.addEventListener("click", handleColorSelection);
 wheelButtonSection.addEventListener("click", handleWheelButtonClick);
 performanceUpgrate.addEventListener("click", handlePerformanceClickButton);
 fullSelfDrivingCheckbox.addEventListener("click", fsd);
-updateTotalPrice();
 centerConsoleTrays.addEventListener("click", handleAccessoriesClick);
 sunshade.addEventListener("click", handleAccessoriesClick);
 allWeatherInteriorLiners.addEventListener("click", handleAccessoriesClick);
